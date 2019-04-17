@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <style>
+            body {
+                padding: 50px;
+            }
+
+            .code {
+                border-left: 2px solid black;
+                padding-left: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Layered Architecture Application</h1>
+        <hr>
+        <form id="emailform" onsubmit="getDataFromBusinessLayer()">
+            <input name="email" id="email" placeholder="Enter email...">
+            <button type="submit">Load Profile</button>
+        </form>
+        <div id="user-container"></div>
+    
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="/presentation-layer-user.js"></script>    
+    </body>
+</html>
