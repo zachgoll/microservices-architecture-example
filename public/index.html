@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./style.css">
+    </head>
+    <body>
+        <p id="log-in-status"></p>
+        <div class="row">
+            <div class="col-4">
+                <h1>Register</h1>
+                <p>This form uses microservice #1 - User authentication</p>
+                <hr>
+                <form class="form-group" action="">
+                    <input class="form-control" id="register-email" type="text" name="email" placeholder="Enter email">
+                    <input class="form-control" id="register-pw" type="password" name="password" placeholder="Enter password">
+                    <br>
+                    <button type="submit" class="btn btn-primary" onclick="register()">Register</button>
+                </form>
+                <p id="register-message" class="hide">Success!  Please log in.</p>
+            </div>
+            <div class="col-4">
+                <h1>Login</h1>
+                <p>This form uses microservice #1 - User authentication</p>
+                <hr>
+                <form class="form-group" action="">
+                    <input class="form-control" id="login-email" type="text" name="email" placeholder="Enter email">
+                    <input class="form-control" id="login-pw" type="password" name="password" placeholder="Enter password">
+                    <br>
+                    <button type="submit" class="btn btn-primary" onclick="login()">Login</button>
+                </form>
+                <p id="login-message" class="hide">Success!  You can now play the game.</p>
+                <p id="login-message-error" class="hide">Error. Wrong username or password.</p>
+                <p id="logout" class="hide">You are logged out!</p>
+                <button id="logout-button" class="btn btn-warning hide" onclick="logout()">Logout</button>
+            </div>
+            <div class="col-4">
+                <h1>Game</h1>
+                <p>This game uses javascript and microservice #2 - Game</p>
+                <p id="winner" class="hide">You Won!</p>
+                <p id="loser" class="hide">You Lost!</p>
+                <p id="logged-out-warning" class="hide">You are not logged in so your score was not recorded.</p>
+                <div id="game-container">
+                    <div id="spinner" class="no-animate"></div>
+                    <div id="target"></div>
+                </div>
+                <button class="btn btn-success" id="start-game">Start Game</button>
+                <button class="btn btn-warning hide" id="stop-spinner">Stop Spinner</button>
+                <button class="btn btn-success hide" id="restart">Restart Game</button>
+                <button class="btn btn-primary" id="see-scores">See Your Score History</button>
+                <button class="btn btn-primary hide" id="hide-scores">Hide Your Score History</button>
+                <div id="results" class="hide">
+                    <p><strong>Wins:</strong> <span id="wins"></span></p>
+                    <p><strong>Losses:</strong> <span id="losses"></span></p>
+                </div>
+            </div>
+        </div>
+    <script
+        src="https://code.jquery.com/jquery-3.4.0.min.js"
+        integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
+        crossorigin="anonymous"></script>
+    <script src="./script.js"></script>
+    </body>
+</html>

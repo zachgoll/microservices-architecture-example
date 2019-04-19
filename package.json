@@ -1,27 +1,23 @@
 {
-  "name": "layered",
+  "name": "microservices-architecture",
   "version": "1.0.0",
-  "description": "``` npm install  npm run start  ```",
+  "description": "You will need MongoDB installed on your computer, start the service, create a database, and create a user to interact with that database.  Don't worry if you do not understand all the commands; this tutorial is not a MongoDB tutorial!",
   "main": "index.js",
-  "dependencies": {
-    "ejs": "^2.6.1",
-    "express": "^4.16.4",
-    "mongoose": "^5.5.2"
-  },
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./business-layer/blayer-user.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zachgoll/layered-architecture-example-app.git"
+    "url": "git+https://github.com/zachgoll/microservices-architecture-example.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/zachgoll/layered-architecture-example-app/issues"
+    "url": "https://github.com/zachgoll/microservices-architecture-example/issues"
   },
-  "homepage": "https://github.com/zachgoll/layered-architecture-example-app#readme"
+  "homepage": "https://github.com/zachgoll/microservices-architecture-example#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
 }

@@ -5,19 +5,15 @@ You will need MongoDB installed on your computer, start the service, create a da
 ```bash 
 mongo
 
-use test_db
+use test_db_2
 
-db.create(
+db.createUser(
     {
         user: "yourname",
         pwd: "yourpassword",
         roles: [ "readWrite", "dbAdmin" ]
     }
 )
-
-db.createCollection("users")
-
-db.users.insert( { name: "Zach", email: "zach@email.com", profileUrl: "https://someurl.com/image.png" })
 ```
 
 ```
@@ -25,10 +21,6 @@ db.users.insert( { name: "Zach", email: "zach@email.com", profileUrl: "https://s
 # Same as above!
 export DB_USER=yourname
 export DB_PW=yourpassword
-
-# Start the app
-npm install 
-npm run start 
 ```
 
 # Explanation 
@@ -37,16 +29,32 @@ In this repository is a microservices software architecture as explained in my b
 
 ![microservices architecture diagram](microservices.png)
 
+The key element of a microservices architecture is the fact that each microservice is entirely separated from the other microservices.  Usually, the front-end user interface utilizes multiple microservices so that the user does not need to visit several applications to do one simple task.  The true value of this architecture comes when you have a complex application and several teams working on that application.  With the monolithic and layered architectures, all the teams must coordinate their efforts to support and improve the application.  With a microservices architecture, you could have three teams who have never talked to each other face-to-face working on the same application.
+
+This is made possible because the microservices and the user interface all communicate through APIs.  In my example below, they are all communicating through the HTTP protocol (the internet).
+
+Below, I have created a simplistic version of a microservices architecture.  Unfortunately, there is not a great way to demonstrate a microservices architecture because by nature, a microservices architecture is designed for _complex applications_.  You will see the general concept, but until you have gotten your hands dirty, there is no way to appreciate the true value of such an architecture.
+
 ## Example
 
-Let's say you are working on a user profile page where the user has a name, email, and photo.  Throughout this example, I will show you how the layers interact to get the user data _from the database to the web page_.
+In this overly simplistic representation of a microservices architecture, I have split an "application" (in quotes because it is really a combination of microservices) into two parts: 
 
-I will be using ExpressJS and MongoDB to demonstrate.
+1. Microservice #1 - User authentication
+    * Register - User can register with an email and password 
+    * Sign In - User can sign in with email and password
+    * Log out - User can log out
+2. Microservice #2 - Game
+    * Play game - Once authenticated, user can play a simple game
+    * See game results history - Every time the user plays the game, a new record is entered into the database with their score
 
-### Microservice #1 - User Management
+### Microservice #1 - User Authentication (http://localhost:8081)
 
-**This microservice is solely responsible for creating, modifying, and deleting users.**
+_Note: The password authentication is not implemented as you should in a production application; it is solely for demonstration and you should never store your users' passwords in plain text like I am doing here!_
 
-### Microservice #2 - Property Management
+**This microservice is solely responsible for creating and authenticating users.**    
+
+
+
+### Microservice #2 - Property Management (http://localhost:8082)
 
 **This microservice is solely responsible for managing the property that each user owns.  A property could be a house or a car.**

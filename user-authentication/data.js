@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 
 // User schema for mongodb
 const UserSchema = mongoose.Schema({
-	name: { type: String },
 	email: { type: String },
-	profileUrl: { type: String }
+	password: { type: String }
 }, { collection: 'users' } );
 
 // Define the mongoose model for use below in method
@@ -16,4 +15,8 @@ module.exports.getUserByEmail = (email, callback) => {
       } catch (err) {
             callback(err);
       }
+};
+
+module.exports.createUser = (newUserObject, callback) => {
+    newUserObject.save(callback);
 };
