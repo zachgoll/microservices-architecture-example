@@ -77,14 +77,14 @@ Below, I have created a simplistic version of a microservices architecture.  Unf
 
 In this overly simplistic representation of a microservices architecture, I have split an "application" (in quotes because it is really a combination of microservices) into three parts: 
 
-1. Microservice #1 - User authentication
+1. **Microservice #1** - User authentication
     * Register - User can register with an email and password 
     * Sign In - User can sign in with email and password
     * Log out - User can log out
-2. Microservice #2 - Game
+2. **Microservice #2** - Game
     * Play game - Once authenticated, user can play a simple game
     * See game results history - Every time the user plays the game, a new record is entered into the database with their score
-3. Front-End User Interface
+3. **Front-End User Interface**
     * Controls the interactive Javascript functionality of the application
     * Brings together the two microservices into a **single user experience**.
 
@@ -150,6 +150,45 @@ Our front-end user application can use these three endpoints at `localhost:8081`
 
 The game microservice is a bit simpler than the user authentication microservice, but demonstrates how we can separate core pieces of functionality of our applications.  Although this is a simple game, you could imagine a much more complex scenario where the game had all sorts of graphic elements and user data.
 
-Even better, if we wanted to improve the game, we would never need to access or modify the user authentication microservice that was created alongside it.
+Below are the two API endpoints that the Game microservice exposes: 
 
-You can see how microservices enable _independent development_ across multiple, functional teams.
+```javascript
+// Register API Call
+app.post('/score', function(req, res, next) {
+
+    const score = req.body.result;
+    const winValue = score == "win" ? 1 : 0;
+    const lossValue = score == "loss" ? 1 : 0;
+    const email = req.body.email;
+
+    // See if user has posted a score already
+    Game.getUserScoresByEmail(email, (err, user) => {
+        // If user hasn't posted a score yet, create an entry for their count in the database
+        if (!user) {
+            Game.createUserWithScore(new Game({
+                email: email,
+                wins: winValue,
+                losses: lossValue
+            }), (err, user) => {
+                res.status(200).json(user);
+            });
+        } else {
+            // If user already has posted a score, update his/her win and loss count based on result
+            Game.updateUserScores(email, winValue, lossValue, (err, count) => {
+                res.status(200).json(count);
+            });
+        }
+    });
+});
+
+app.get('/score/:email', function (req, res, next) {
+    
+    Game.getUserScoresByEmail(req.params.email, (err, user) => {
+        res.status(200).json(user);
+    });
+});
+```
+
+## Conclusion
+
+By decoupling an application into components, it becomes easier to test, improve, and manage each part.  Through this simplified example, you can see how microservices enable _independent development_ across multiple, functional teams.
