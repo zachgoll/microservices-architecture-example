@@ -23,6 +23,44 @@ export DB_USER=yourname
 export DB_PW=yourpassword
 ```
 
+Now, we need to start all of the pieces to our application.  You could easily create a script that starts all the pieces at once, but it is more educational to do it manually.
+
+As you will read in the explanation section, this application has three parts: 
+
+1. Microservice #1 (localhost:8081)
+2. Microservice #2 (localhost:8082)
+3. User Interface Static Server (localhost:8080)
+
+Open up 3 terminal windows and go to the root of this project in all of them.  Now enter the following commands.
+
+```bash 
+# Terminal window #1
+
+node app.js
+```
+
+```bash
+# Terminal window #2
+
+# Set your environment variables to connect to Database
+export DB_USER=yourname
+export DB_PW=yourpassword
+
+node game/server.js
+```
+
+```bash
+# Terminal window #3
+
+# Set your environment variables to connect to Database
+export DB_USER=yourname
+export DB_PW=yourpassword
+
+node user-authentication/server.js
+```
+
+Now, open your brower to `http://localhost:8080` and your app is running!
+
 # Explanation 
 
 In this repository is a microservices software architecture as explained in my blog post: [How to Build a Production Web Application Part 4: Architecture](https://zachgoll.github.io/blog/2019/build-production-web-app-part-4/)
@@ -37,7 +75,7 @@ Below, I have created a simplistic version of a microservices architecture.  Unf
 
 ## Example
 
-In this overly simplistic representation of a microservices architecture, I have split an "application" (in quotes because it is really a combination of microservices) into two parts: 
+In this overly simplistic representation of a microservices architecture, I have split an "application" (in quotes because it is really a combination of microservices) into three parts: 
 
 1. Microservice #1 - User authentication
     * Register - User can register with an email and password 
@@ -46,6 +84,11 @@ In this overly simplistic representation of a microservices architecture, I have
 2. Microservice #2 - Game
     * Play game - Once authenticated, user can play a simple game
     * See game results history - Every time the user plays the game, a new record is entered into the database with their score
+3. Front-End User Interface
+    * Controls the interactive Javascript functionality of the application
+    * Brings together the two microservices into a **single user experience**.
+
+You will notice that the design of each microservice resembles the [layered architecture](https://github.com/zachgoll/layered-architecture-example-app) that I previously covered.  This is where software architecture and design patterns become confusing to the novice.  Sometimes you will find one architecture built behind the door of another architecture.
 
 ### Microservice #1 - User Authentication (http://localhost:8081)
 
@@ -53,8 +96,60 @@ _Note: The password authentication is not implemented as you should in a product
 
 **This microservice is solely responsible for creating and authenticating users.**    
 
+In many complex applications, an entire server will be devoted to authenticating and managing users.  After all, without users, you have no application.  Therefore, it is critical to not only implement the user functionality, but maintain proper security and protect the users' data.
 
+To understand why a user authentication microservice might be useful, imagine a large company that offers a wide variety of services to their users.  A perfect example is Google because you not only use your login credentials for Gmail and other core Google services; you also use it to log into YouTube and many other applications.  
 
-### Microservice #2 - Property Management (http://localhost:8082)
+Imagine if Google implemented a user authentication scheme in **each individual application**!!  This is highly inefficient, so instead, Google created a "microservice" that functions as user authentication for not only Google applications, but an increasingly large number of 3rd party applications.  This is made possible because the authentication microservice is _decoupled_ from the underlying infrastructure with robust APIs.  **This is the goal of microservices.**
 
-**This microservice is solely responsible for managing the property that each user owns.  A property could be a house or a car.**
+You will see in the application that I have created a much much much much much (did I say much?) simpler authentication microservice than what Google owns.  Nevertheless, it demonstrates how we might implement an "authentication API" for one or more applications.
+
+Below, you'll see the three API endpoints that this microservice exposes: 
+
+```javascript
+app.post('/register', function(req, res, next) {
+    
+    const newUser = new User({
+        email: req.body.email,
+        password: req.body.password
+    });
+    
+    User.createUser(newUser, (err, user) => {
+        res.status(200).json(user);
+    });
+});
+
+app.post('/authenticate', (req, res, next) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    User.getUserByEmail(email, (error, user) => {
+        if (user && user.password == password) {
+            // User entered the correct password and we should authenticate them!
+            res.status(200).json({ authenticated: true });
+        } else {
+            // User entered the wrong password
+            res.status(200).json({ authenticated: false });
+        }
+    });
+
+});
+
+app.get('/get-user/:useremail', function(req, res) {
+    User.getUserByEmail(req.params.useremail, (error, user) => {
+        res.status(200).json({ email: user.email, password: user.password });
+    });    
+});
+```
+
+Our front-end user application can use these three endpoints at `localhost:8081` to manage users!
+
+### Microservice #2 - Game (http://localhost:8082)
+
+**This microservice is solely responsible for managing gameplay results of all the application users registered through the authentication microservice.**
+
+The game microservice is a bit simpler than the user authentication microservice, but demonstrates how we can separate core pieces of functionality of our applications.  Although this is a simple game, you could imagine a much more complex scenario where the game had all sorts of graphic elements and user data.
+
+Even better, if we wanted to improve the game, we would never need to access or modify the user authentication microservice that was created alongside it.
+
+You can see how microservices enable _independent development_ across multiple, functional teams.

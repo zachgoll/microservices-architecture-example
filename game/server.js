@@ -43,9 +43,8 @@ app.post('/score', function(req, res, next) {
 });
 
 app.get('/score/:email', function (req, res, next) {
-    console.log(req.params.email)
+    
     Game.getUserScoresByEmail(req.params.email, (err, user) => {
-        console.log(user);
         res.status(200).json(user);
     });
 });
